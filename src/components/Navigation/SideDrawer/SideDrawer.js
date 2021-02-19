@@ -1,6 +1,6 @@
 import Logo from '../../Logo/Logo';
 import NavItems from '../NavItems/NavItems';
-import Aux from '../../../hoc/Auxiliary';
+import Aux from '../../../hoc/Auxiliary/Auxiliary';
 import Backdrop from '../../UI/Backdrop/Backdrop';
 
 import classes from './SideDrawer.module.css';
