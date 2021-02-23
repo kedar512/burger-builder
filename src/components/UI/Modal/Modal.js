@@ -18,4 +18,4 @@ const Modal = (props) => (
     </Aux>
 );
 
-export default React.memo(Modal, (props, nextProps) => props.show === nextProps.show);
+export default React.memo(Modal, (props, nextProps) => !( props.show !== nextProps.show || props.children !== nextProps.children) );
