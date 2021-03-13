@@ -4,7 +4,8 @@ import { updateObject } from '../utility';
 const initialState = {
     ingredients: null,
     totalPrice: 4,
-    error: false
+    error: false,
+    building: false
 }
 
 const INGREDIENT_PRICE = {
@@ -24,7 +25,8 @@ const reducer = (state = initialState, action) => {
             }
             const updatedState = {
                 ingredients: newIngredients,
-                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName]
+                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName],
+                building: true
             }
             return updateObject(state, updatedState);
         case actionTypes.REMOVE_INGREDIENT:
@@ -35,17 +37,19 @@ const reducer = (state = initialState, action) => {
             }
             const updatedSt = {
                 ingredients: newIngs,
-                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName]
+                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName],
+                building: true
             }
             return updateObject(state, updatedSt);
         case actionTypes.SET_INGREDIENTS:
             return updateObject(state, {
                 ingredients: action.ingredients,
                 error: false,
-                totalPrice: 4
+                totalPrice: 4,
+                building: false
             });
         case actionTypes.FETCH_INGREDIENTS_FAILED:
-            return updateObject(state, { error: true });
+            return updateObject(state, { error: true, building: false });
         default:
             return state;
     }
