@@ -24,6 +24,10 @@ export const authFail = (error) => {
 }
 
 export const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expirationDate');
+    localStorage.removeItem('userId');
+
     return {
         type: actionTypes.AUTH_LOGOUT
     }
@@ -53,8 +57,17 @@ export const auth = (email, password, isSignup) => {
        axios.post(url, authData)
             .then( response => {
                 console.log(response);
+                const userId = response.data.localId;
+                const expiresIn = response.data.expiresIn;
+                //const expiresIn = 60;
+                const expirationDate = new Date(new Date().getTime() + (expiresIn * 1000));
+
+                localStorage.setItem('token', response.data.idToken);
+                localStorage.setItem('expirationDate', expirationDate);
+                localStorage.setItem('userId', userId);
+
                 dispatch(authSuccess(response.data));
-                dispatch(checkLogout(response.data.expiresIn));
+                dispatch(checkLogout(expiresIn));
             })
             .catch(error => {
                 dispatch(authFail(error.response.data.error));
@@ -67,4 +80,35 @@ export const setAuthRedirectPath = (path) => {
         type: actionTypes.SET_AUTH_REDIRECT_PATH,
         path: path
     }
+}
+
+export const checkAuthStatus = () => {
+    return dispatch => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            dispatch(logout());
+        } else {
+            const expirationDate = new Date(localStorage.getItem('expirationDate'));
+            if (expirationDate > new Date()) {
+                const expiresIn = calculateExpiresIn(expirationDate);
+                console.log('Expires in', expiresIn);
+                const authData = {
+                    idToken: localStorage.getItem('token'),
+                    localId: localStorage.getItem('userId')
+                }
+                dispatch(authSuccess(authData));
+                dispatch(checkLogout(expiresIn));
+            } else {
+                dispatch(logout());
+            }
+        }
+    }
+}
+
+const calculateExpiresIn = (expirationDate) => {
+    const expiredIn = ( ( expirationDate.getHours() - new Date().getHours() ) * 3600 )
+    + ( ( expirationDate.getMinutes() - new Date().getMinutes() ) * 60 )
+    + ( expirationDate.getSeconds() - new Date().getSeconds() )
+    return expiredIn;
 }
