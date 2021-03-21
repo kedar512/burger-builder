@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
@@ -16,7 +16,7 @@ class Checkout extends Component {
     }
 
     render() {
-        let summary = <Redirect to='/' />
+        let summary = <Redirect to='/' />;
         const purchased = this.props.purchased ? <Redirect to='/' /> : null;
         if (this.props.ings) {
             summary = (
@@ -42,4 +42,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps)(Checkout);
+export default withRouter(connect(mapStateToProps)(Checkout));
