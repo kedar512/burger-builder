@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
             }
             const updatedSt = {
                 ingredients: newIngs,
-                totalPrice: state.totalPrice + INGREDIENT_PRICE[action.ingredientName],
+                totalPrice: state.totalPrice - INGREDIENT_PRICE[action.ingredientName],
                 building: true
             }
             return updateObject(state, updatedSt);
